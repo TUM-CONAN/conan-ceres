@@ -45,13 +45,6 @@ class LibCeresConan(ConanFile):
         cmake.definitions["BUILD_TESTING"] = "OFF"
         cmake.definitions["BUILD_EXAMPLES"] = "OFF"
         cmake.definitions["CXX11"] = "ON"
-        cxsparse_lib_dir = self.deps_cpp_info["cxsparse"].lib_paths[0].replace('\\', '/')
-        cxsparse_lib_path = self.deps_cpp_info["cxsparse"].libs[0].replace('\\', '/')
-        cxsparse_include_dir = self.deps_cpp_info["cxsparse"].include_paths[0].replace('\\', '/')
-        cmake.definitions["CXSPARSE_LIBRARY_DIR_HINTS"] = cxsparse_lib_dir
-        cmake.definitions["CXSPARSE_LIBRARY"] = cxsparse_lib_path
-        cmake.definitions["CXSPARSE_INCLUDE_DIRS"] = os.path.join(cxsparse_include_dir, "CXSparse")
-        cmake.definitions["CXSPARSE_INCLUDE_DIR"] = os.path.join(cxsparse_include_dir, "CXSparse")
         cmake.configure(build_folder=self.build_subfolder)
         cmake.build()
         cmake.install()
