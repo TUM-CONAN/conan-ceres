@@ -20,6 +20,9 @@ class LibCeresConan(ConanFile):
     build_subfolder = "build_subfolder"
     short_paths = False
 
+    def configure(self):
+        del self.settings.compiler.libcxx
+
     def requirements(self):
         self.requires("eigen/3.3.4@fw4spl/stable")
         self.requires("glog/0.3.5-rev-8d7a107@fw4spl/stable")
