@@ -48,6 +48,8 @@ class LibCeresConan(ConanFile):
         cmake.definitions["BUILD_TESTING"] = "OFF"
         cmake.definitions["BUILD_EXAMPLES"] = "OFF"
         cmake.definitions["CXX11"] = "ON"
+        if not tools.os_info.is_windows:
+            cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
         cmake.configure(build_folder=self.build_subfolder)
         cmake.build()
         cmake.install()
