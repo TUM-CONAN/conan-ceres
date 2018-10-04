@@ -11,7 +11,8 @@ class LibCeresConan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=True"
     exports = [
-        "patches/CMakeProjectWrapper.txt"
+        "patches/CMakeProjectWrapper.txt",
+        "patches/CMakeLists.patch"
     ]
     url = "https://gitlab.lan.local/conan/conan-ceres"
     license="New BSD license"
@@ -35,6 +36,7 @@ class LibCeresConan(ConanFile):
     def build(self):
         cxsparse_source_dir = os.path.join(self.source_folder, self.source_subfolder)
         shutil.move("patches/CMakeProjectWrapper.txt", "CMakeLists.txt")
+        tools.patch(cxsparse_source_dir, "patches/CMakeLists.patch")
 
         cmake = CMake(self)
         cmake.definitions["GLOG_PREFER_EXPORTED_GLOG_CMAKE_CONFIGURATION"] = "ON"
