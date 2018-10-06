@@ -25,9 +25,9 @@ class LibCeresConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def requirements(self):
-        self.requires("eigen/3.3.4@fw4spl/stable")
-        self.requires("glog/0.3.5-rev-8d7a107@fw4spl/stable")
-        self.requires("cxsparse/3.1.1@fw4spl/stable")
+        self.requires("eigen/3.3.4@sight/stable")
+        self.requires("glog/0.3.5-rev-8d7a107@sight/stable")
+        self.requires("cxsparse/3.1.1@sight/stable")
     
     def source(self):
         tools.get("http://ceres-solver.org/ceres-solver-{0}.tar.gz".format(self.version))
