@@ -1,7 +1,9 @@
-from conans import ConanFile, CMake, tools, AutoToolsBuildEnvironment
-from conans.util import files
 import os
 import shutil
+
+from conans import ConanFile, CMake, tools, AutoToolsBuildEnvironment
+from conans.util import files
+
 
 class LibCeresConan(ConanFile):
     name = "ceres"
@@ -15,7 +17,7 @@ class LibCeresConan(ConanFile):
         "patches/CMakeLists.patch"
     ]
     url = "https://gitlab.lan.local/conan/conan-ceres"
-    license="New BSD license"
+    license = "New BSD license"
     description = "Ceres Solver is an open source C++ library for modeling and solving large, complicated optimization problems."
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
@@ -28,7 +30,7 @@ class LibCeresConan(ConanFile):
         self.requires("eigen/3.3.4@sight/stable")
         self.requires("glog/0.3.5-rev-8d7a107@sight/stable")
         self.requires("cxsparse/3.1.1@sight/stable")
-    
+
     def source(self):
         tools.get("http://ceres-solver.org/ceres-solver-{0}.tar.gz".format(self.version))
         os.rename("ceres-solver-" + self.version, self.source_subfolder)
@@ -58,3 +60,15 @@ class LibCeresConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
+
+    def cmake_fix_path(self, file_path, package_name):
+        tools.replace_in_file(
+            file_path,
+            self.deps_cpp_info[package_name].rootpath.replace('\\', '/'),
+            "${CONAN_" + package_name.upper() + "_ROOT}"
+        )
+
+    def package(self):
+        if not tools.os_info.is_windows:
+            ceres_config_file = os.path.join(self.package_folder, "lib", "cmake", "Ceres", "CeresConfig.cmake")
+            self.cmake_fix_path(ceres_config_file, "glog")
