@@ -16,7 +16,7 @@ class LibCeresConan(ConanFile):
         "patches/CMakeProjectWrapper.txt",
         "patches/CMakeLists.patch"
     ]
-    url = "https://gitlab.lan.local/conan/conan-ceres"
+    url = "https://git.ircad.fr/conan/conan-ceres"
     license = "New BSD license"
     description = "Ceres Solver is an open source C++ library for modeling and solving large, complicated optimization problems."
     source_subfolder = "source_subfolder"
