@@ -7,7 +7,8 @@ from conans.util import files
 
 class LibCeresConan(ConanFile):
     name = "ceres"
-    version = "1.14.0"
+    short_version = "1.14.0"
+    version = "{0}-r1".format(short_version)
     generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False]}
@@ -27,13 +28,13 @@ class LibCeresConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def requirements(self):
-        self.requires("eigen/3.3.4@sight/stable")
+        self.requires("eigen/3.3.7@sight/testing")
         self.requires("glog/0.3.5-rev-8d7a107@sight/stable")
         self.requires("cxsparse/3.1.1@sight/stable")
 
     def source(self):
-        tools.get("http://ceres-solver.org/ceres-solver-{0}.tar.gz".format(self.version))
-        os.rename("ceres-solver-" + self.version, self.source_subfolder)
+        tools.get("http://ceres-solver.org/ceres-solver-{0}.tar.gz".format(self.short_version))
+        os.rename("ceres-solver-" + self.short_version, self.source_subfolder)
 
     def build(self):
         cxsparse_source_dir = os.path.join(self.source_folder, self.source_subfolder)
