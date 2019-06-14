@@ -48,8 +48,11 @@ class LibCeresConan(ConanFile):
         tools.patch(cxsparse_source_dir, "patches/CMakeLists.patch")
 
         cmake = CMake(self)
-        cmake.definitions["CMAKE_C_FLAGS"] = common.get_c_flags()
-        cmake.definitions["CMAKE_CXX_FLAGS"] = common.get_cxx_flags()
+
+        # Set common flags
+        cmake.definitions["SIGHT_CMAKE_C_FLAGS"] = common.get_c_flags()
+        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS"] = common.get_cxx_flags()
+
         cmake.definitions["GLOG_PREFER_EXPORTED_GLOG_CMAKE_CONFIGURATION"] = "ON"
         cmake.definitions["LAPACK"] = "OFF"
         cmake.definitions["SUITESPARSE"] = "OFF"
