@@ -30,9 +30,9 @@ class LibCeresConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def requirements(self):
-        self.requires("eigen/3.3.7-r1@sight/testing")
-        self.requires("glog/0.4.0-r1@sight/testing")
-        self.requires("cxsparse/3.1.1-r2@sight/testing")
+        self.requires("eigen/3.3.7-r1@sight/stable")
+        self.requires("glog/0.4.0-r1@sight/stable")
+        self.requires("cxsparse/3.1.1-r2@sight/stable")
         self.requires("common/1.0.0@sight/stable")
 
     def source(self):
