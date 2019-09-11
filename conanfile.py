@@ -8,7 +8,7 @@ from fnmatch import fnmatch
 class LibCeresConan(ConanFile):
     name = "ceres"
     upstream_version = "1.14.0"
-    package_revision = "-r2"
+    package_revision = "-r3"
     version = "{0}{1}".format(upstream_version, package_revision)
 
     generators = "cmake"
@@ -30,10 +30,10 @@ class LibCeresConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def requirements(self):
-        self.requires("eigen/3.3.7-r1@sight/stable")
-        self.requires("glog/0.4.0-r1@sight/stable")
-        self.requires("cxsparse/3.1.1-r2@sight/stable")
-        self.requires("common/1.0.0@sight/stable")
+        self.requires("eigen/3.3.7-r2@sight/testing")
+        self.requires("glog/0.4.0-r2@sight/testing")
+        self.requires("cxsparse/3.1.1-r3@sight/testing")
+        self.requires("common/1.0.1@sight/testing")
 
     def source(self):
         tools.get("http://ceres-solver.org/ceres-solver-{0}.tar.gz".format(self.upstream_version))
