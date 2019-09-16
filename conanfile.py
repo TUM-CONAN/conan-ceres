@@ -1,8 +1,6 @@
 import os
 import shutil
-
 from conans import ConanFile, CMake, tools
-from fnmatch import fnmatch
 
 
 class LibCeresConan(ConanFile):
@@ -21,7 +19,8 @@ class LibCeresConan(ConanFile):
     ]
     url = "https://git.ircad.fr/conan/conan-ceres"
     license = "New BSD license"
-    description = "Ceres Solver is an open source C++ library for modeling and solving large, complicated optimization problems."
+    description = ("Ceres Solver is an open source C++ library for modeling and solving large, "
+                   "complicated optimization problems.")
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
     short_paths = True
