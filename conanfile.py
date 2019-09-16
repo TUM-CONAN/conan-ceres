@@ -15,7 +15,8 @@ class LibCeresConan(ConanFile):
     default_options = "shared=True"
     exports = [
         "patches/CMakeProjectWrapper.txt",
-        "patches/CMakeLists.patch"
+        "patches/CMakeLists.patch",
+        "patches/c++17.patch"
     ]
     url = "https://git.ircad.fr/conan/conan-ceres"
     license = "New BSD license"
@@ -45,6 +46,7 @@ class LibCeresConan(ConanFile):
         cxsparse_source_dir = os.path.join(self.source_folder, self.source_subfolder)
         shutil.move("patches/CMakeProjectWrapper.txt", "CMakeLists.txt")
         tools.patch(cxsparse_source_dir, "patches/CMakeLists.patch")
+        tools.patch(cxsparse_source_dir, "patches/c++17.patch")
 
         cmake = CMake(self)
 
