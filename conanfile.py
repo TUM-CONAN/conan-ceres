@@ -26,9 +26,6 @@ class LibCeresConan(ConanFile):
     build_subfolder = "build_subfolder"
     short_paths = True
 
-    def configure(self):
-        del self.settings.compiler.libcxx
-
     def requirements(self):
         self.requires("eigen/3.3.7-r2@sight/testing")
         self.requires("glog/0.4.0-r2@sight/testing")
@@ -50,9 +47,11 @@ class LibCeresConan(ConanFile):
 
         cmake = CMake(self)
 
-        # Set common flags
-        cmake.definitions["SIGHT_CMAKE_C_FLAGS"] = common.get_c_flags()
+        # Export common flags
         cmake.definitions["SIGHT_CMAKE_CXX_FLAGS"] = common.get_cxx_flags()
+        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS_RELEASE"] = common.get_cxx_flags_release()
+        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS_DEBUG"] = common.get_cxx_flags_debug()
+        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS_RELWITHDEBINFO"] = common.get_cxx_flags_relwithdebinfo()
 
         cmake.definitions["GLOG_PREFER_EXPORTED_GLOG_CMAKE_CONFIGURATION"] = "ON"
         cmake.definitions["LAPACK"] = "OFF"
