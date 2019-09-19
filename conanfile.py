@@ -1,5 +1,4 @@
 import os
-import shutil
 from conans import ConanFile, CMake, tools
 
 
@@ -14,7 +13,6 @@ class LibCeresConan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=True"
     exports = [
-        "patches/CMakeProjectWrapper.txt",
         "patches/CMakeLists.patch",
         "patches/c++17.patch"
     ]
@@ -23,7 +21,6 @@ class LibCeresConan(ConanFile):
     description = ("Ceres Solver is an open source C++ library for modeling and solving large, "
                    "complicated optimization problems.")
     source_subfolder = "source_subfolder"
-    build_subfolder = "build_subfolder"
     short_paths = True
 
     def requirements(self):
@@ -37,21 +34,22 @@ class LibCeresConan(ConanFile):
         os.rename("ceres-solver-" + self.upstream_version, self.source_subfolder)
 
     def build(self):
-        # Retrieve common helpers
-        import common
-
         cxsparse_source_dir = os.path.join(self.source_folder, self.source_subfolder)
-        shutil.move("patches/CMakeProjectWrapper.txt", "CMakeLists.txt")
         tools.patch(cxsparse_source_dir, "patches/CMakeLists.patch")
         tools.patch(cxsparse_source_dir, "patches/c++17.patch")
 
-        cmake = CMake(self)
+        # Import common flags and defines
+        import common
 
-        # Export common flags
-        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS"] = common.get_cxx_flags()
-        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS_RELEASE"] = common.get_cxx_flags_release()
-        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS_DEBUG"] = common.get_cxx_flags_debug()
-        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS_RELWITHDEBINFO"] = common.get_cxx_flags_relwithdebinfo()
+        # Generate Cmake wrapper
+        common.generate_cmake_wrapper(
+            cmakelists_path='CMakeLists.txt',
+            source_subfolder=self.source_subfolder,
+            build_type=self.settings.build_type
+        )
+
+        cmake = CMake(self)
+        cmake.verbose = True
 
         cmake.definitions["GLOG_PREFER_EXPORTED_GLOG_CMAKE_CONFIGURATION"] = "ON"
         cmake.definitions["LAPACK"] = "OFF"
@@ -68,7 +66,7 @@ class LibCeresConan(ConanFile):
         if not tools.os_info.is_windows:
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
 
-        cmake.configure(build_folder=self.build_subfolder)
+        cmake.configure()
         cmake.build()
         cmake.install()
 
