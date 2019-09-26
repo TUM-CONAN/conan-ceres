@@ -1,14 +1,11 @@
 import os
-import shutil
-
 from conans import ConanFile, CMake, tools
-from fnmatch import fnmatch
 
 
 class LibCeresConan(ConanFile):
     name = "ceres"
     upstream_version = "1.14.0"
-    package_revision = "-r2"
+    package_revision = "-r3"
     version = "{0}{1}".format(upstream_version, package_revision)
 
     generators = "cmake"
@@ -16,42 +13,42 @@ class LibCeresConan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=True"
     exports = [
-        "patches/CMakeProjectWrapper.txt",
-        "patches/CMakeLists.patch"
+        "patches/CMakeLists.patch",
+        "patches/c++17.patch"
     ]
     url = "https://git.ircad.fr/conan/conan-ceres"
     license = "New BSD license"
-    description = "Ceres Solver is an open source C++ library for modeling and solving large, complicated optimization problems."
+    description = ("Ceres Solver is an open source C++ library for modeling and solving large, "
+                   "complicated optimization problems.")
     source_subfolder = "source_subfolder"
-    build_subfolder = "build_subfolder"
     short_paths = True
 
-    def configure(self):
-        del self.settings.compiler.libcxx
-
     def requirements(self):
-        self.requires("eigen/3.3.7-r1@sight/stable")
-        self.requires("glog/0.4.0-r1@sight/stable")
-        self.requires("cxsparse/3.1.1-r2@sight/stable")
-        self.requires("common/1.0.0@sight/stable")
+        self.requires("eigen/3.3.7-r2@sight/stable")
+        self.requires("glog/0.4.0-r2@sight/stable")
+        self.requires("cxsparse/3.1.1-r3@sight/stable")
+        self.requires("common/1.0.1@sight/stable")
 
     def source(self):
         tools.get("http://ceres-solver.org/ceres-solver-{0}.tar.gz".format(self.upstream_version))
         os.rename("ceres-solver-" + self.upstream_version, self.source_subfolder)
 
     def build(self):
-        # Retrieve common helpers
+        cxsparse_source_dir = os.path.join(self.source_folder, self.source_subfolder)
+        tools.patch(cxsparse_source_dir, "patches/CMakeLists.patch")
+        tools.patch(cxsparse_source_dir, "patches/c++17.patch")
+
+        # Import common flags and defines
         import common
 
-        cxsparse_source_dir = os.path.join(self.source_folder, self.source_subfolder)
-        shutil.move("patches/CMakeProjectWrapper.txt", "CMakeLists.txt")
-        tools.patch(cxsparse_source_dir, "patches/CMakeLists.patch")
+        # Generate Cmake wrapper
+        common.generate_cmake_wrapper(
+            cmakelists_path='CMakeLists.txt',
+            source_subfolder=self.source_subfolder,
+            build_type=self.settings.build_type
+        )
 
         cmake = CMake(self)
-
-        # Set common flags
-        cmake.definitions["SIGHT_CMAKE_C_FLAGS"] = common.get_c_flags()
-        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS"] = common.get_cxx_flags()
 
         cmake.definitions["GLOG_PREFER_EXPORTED_GLOG_CMAKE_CONFIGURATION"] = "ON"
         cmake.definitions["LAPACK"] = "OFF"
@@ -68,7 +65,7 @@ class LibCeresConan(ConanFile):
         if not tools.os_info.is_windows:
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
 
-        cmake.configure(build_folder=self.build_subfolder)
+        cmake.configure()
         cmake.build()
         cmake.install()
 
