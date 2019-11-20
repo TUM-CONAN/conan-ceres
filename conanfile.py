@@ -5,7 +5,7 @@ from conans import ConanFile, CMake, tools
 class LibCeresConan(ConanFile):
     name = "ceres"
     upstream_version = "1.14.0"
-    package_revision = "-r3"
+    package_revision = "-r4"
     version = "{0}{1}".format(upstream_version, package_revision)
 
     generators = "cmake"
@@ -24,10 +24,10 @@ class LibCeresConan(ConanFile):
     short_paths = True
 
     def requirements(self):
-        self.requires("eigen/3.3.7-r2@sight/stable")
-        self.requires("glog/0.4.0-r2@sight/stable")
-        self.requires("cxsparse/3.1.1-r3@sight/stable")
-        self.requires("common/1.0.1@sight/stable")
+        self.requires("eigen/3.3.7-r3@sight/stable")
+        self.requires("glog/0.4.0-r3@sight/stable")
+        self.requires("cxsparse/3.1.1-r4@sight/stable")
+        self.requires("common/1.0.2@sight/stable")
 
     def source(self):
         tools.get("http://ceres-solver.org/ceres-solver-{0}.tar.gz".format(self.upstream_version))
